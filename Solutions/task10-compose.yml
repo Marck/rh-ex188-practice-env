@@ -1,0 +1,48 @@
+version: "3"
+services:
+  redis:
+    image: docker.io/redis
+    networks:
+      - back-end
+  db:
+    image: docker.io/postgres:9.4
+    networks:
+      - back-end
+    volumes:
+      - db-data:/var/postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+  vote:
+    image: docker.io/dockersamples/examplevotingapp_vote
+    networks:
+      - front-end
+      - back-end
+    ports:
+      - "5000:80"
+    depends_on:
+      - redis
+  result:
+    image: docker.io/dockersamples/examplevotingapp_result
+    networks:
+      - front-end
+      - back-end
+    ports:
+      - "5001:80"
+    depends_on:
+      - db
+  worker:
+    image: docker.io/dockersamples/examplevotingapp_worker
+    networks:
+     - back-end
+    depends_on:
+      - db
+      - redis
+networks:
+  front-end:
+    driver: bridge
+  back-end:
+    internal: true
+volumes:
+  db-data:
+    driver: local

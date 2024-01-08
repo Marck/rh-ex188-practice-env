@@ -58,7 +58,13 @@ When run, they should respectively output "joe" and "lisa".
 
 
 
-## Task 10
+## Task 10 <- deze geeft geen goed resultaat, omdat er nog allerlei database issues zijn en de compose file is incorrect ->
+
+Install podman compose for this step:
+
+```bash
+sudo yum -y install podman-compose
+```
 
 **Note:**
 
@@ -71,14 +77,12 @@ Use the incomplete Podman Stack file located in /dockerfiles/voting/docker-compo
 
 The Stack consists of five services:
 
-* Using the "redis" image, named "redis", in network "front-end"
+* Using the "redis" image, named "redis", in network "back-end"
 * Using the "postgres:9.4" image, named "db", in network "back-end", with volume "db-data" mounted on /var/postgres.
 * The Postgres container needs to have two environment variables: POSTGRES_USER and POSTGRES_PASSWORD, both set to "postgres". 
 * Using the "dockersamples/examplevotingapp_vote" image, named "vote", in networks "back-end" and in "front-end". 
-* The "vote" container exposes port 5000 on public port 5000. It depends on "redis". 
+* The "vote" container exposes port 80 on public port 5000. It depends on "redis". 
 * Using the "dockersamples/examplevotingapp_result" image, named "result", in networks "back-end" and in "front-end". 
-* The "vote" container exposes port 5001 on public port 5001. It depends on "db". 
-* Using the "dockersamples/examplevotingapp_worker" image, named "worker", in networks "back-end" and "front-end". 
+* The "result" container exposes port 80 on public port 5001. It depends on "db". 
+* Using the "dockersamples/examplevotingapp_worker" image, named "worker", in network "back-end". 
 * The "worker" container depends on both "db" and "redis". 
-
-
